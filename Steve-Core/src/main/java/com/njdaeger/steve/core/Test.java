@@ -13,7 +13,7 @@ public class Test {
     }
 
     public void command(Arguments args, ) {
-
+        
     }
 
    /*
