@@ -1,4 +1,4 @@
-package com.njdaeger.steve.core;
+package com.njdaeger.steve.core.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -25,11 +25,15 @@ public @interface Command {
     String[] aliases() default {};
 
     /**
-     * The description to show
-     * @return
+     * The description of the command.
+     * @return The description of the command.
      */
     String description() default "";
 
+    /**
+     * The usage of the command.
+     * @return
+     */
     String usage() default "";
 
     int max() default -1;

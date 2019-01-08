@@ -2,6 +2,10 @@ package com.njdaeger.steve.core;
 
 import com.njdaeger.steve.core.argument.Arguments;
 
+/**
+ * Represents a base CommandContext which represents the sender of this command.
+ * @param <S> The Platform specific CommandSource
+ */
 public interface CommandContext<S> {
 
     S getSource();

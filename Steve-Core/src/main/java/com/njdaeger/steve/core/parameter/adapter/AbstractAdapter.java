@@ -5,6 +5,12 @@ import com.njdaeger.steve.core.exception.AdapterException;
 
 public abstract class AbstractAdapter<R> {
 
+    protected int currentArgumentIndex = 0;
+
+    public AbstractAdapter(int currentArgumentIndex) {
+        this.currentArgumentIndex = currentArgumentIndex;
+    }
+
     public abstract R adapt(Arguments args) throws AdapterException;
 
 }
