@@ -13,4 +13,6 @@ public @interface Flag {
 
     String value();
 
+    int consume() default 1;
+
 }

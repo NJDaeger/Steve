@@ -5,7 +5,10 @@ import com.njdaeger.steve.core.exception.NotEnoughArgumentsException;
 import com.njdaeger.steve.core.parameter.adapter.AbstractAdapter;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * Represents the raw arguments provided in the given command.
@@ -23,6 +26,11 @@ public class Arguments implements Iterable<String> {
         this.arguments = arguments;
     }
 
+    /**
+     * Returns an iterator of the arguments array.
+     *
+     * @return An iterator of the arguments array.
+     */
     @Override
     public Iterator<String> iterator() {
         return new ArgumentsIterator();
@@ -70,11 +78,52 @@ public class Arguments implements Iterable<String> {
      * within bounds and if the argument found is not null.
      *
      * @param index The index to check for an argument.
-     * @return True if the index given is greater than 0 and less than the length of the arguments array and if the
+     * @return True if the index given is greater than or equal to 0 and less than the length of the arguments array and if the
      *         argument found is not null.
      */
     public boolean hasArgAt(int index) {
-        return index >= 0 && index < arguments.length && arguments[index - 1] != null;
+        return index >= 0 && index < arguments.length && arguments[index] != null;
+    }
+
+    /**
+     * Check if the arguments array has an argument at the specified index which matches the given {@link
+     * AbstractAdapter} parser.
+     *
+     * @param index The index of the argument to check.
+     * @param type The class type of the adapter to parse this argument with.
+     * @param <A> The {@link AbstractAdapter} to parse the argument with
+     * @param <T> The return type which is specified in the {@link AbstractAdapter<T>}
+     * @return True if the argument at the given index is parsable with the specified Abstract Adapter.
+     */
+    public <A extends AbstractAdapter<T>, T> boolean isArgAt(int index, Class<A> type) {
+        try {
+            argAt(index, type);
+        } catch (AdapterException | NotEnoughArgumentsException e) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Attempt to get an argument from the arguments array at the specified index parsed as the specified Adapter type
+     *
+     * @param index The index of the argument to retrieve.
+     * @param type The class type of the adapter to parse the argument with.
+     * @param <A> The {@link AbstractAdapter} to parse the argument with.
+     * @param <T> The return type which is specified in the {@link AbstractAdapter<T>}
+     * @return The argument at the specified index parsed as the Adapter's adapting type.
+     * @throws AdapterException If the argument exists, but could not be parsed to the given adapter.
+     * @throws NotEnoughArgumentsException If the argument does not exist.
+     */
+    public <A extends AbstractAdapter<T>, T> T argAt(int index, Class<A> type) throws AdapterException, NotEnoughArgumentsException {
+        if (hasArgAt(index)) {
+            try {
+                return type.getDeclaredConstructor(int.class).newInstance(index).adapt(this);
+            } catch (InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+        throw new NotEnoughArgumentsException("Cannot adapt argument " + index + ". It does not exist!");
     }
 
     /**
@@ -132,7 +181,7 @@ public class Arguments implements Iterable<String> {
      *         unable to be parsed or if the first argument does not exist.
      */
     public <A extends AbstractAdapter<T>, T> T first(Class<A> type, T fallback) {
-
+        is
     }
 
     private class ArgumentsIterator implements Iterator<String> {

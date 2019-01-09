@@ -13,6 +13,4 @@ public abstract class AbstractAdapter<R> {
 
     public abstract R adapt(Arguments args) throws AdapterException;
 
-    public abstract String errorMessage();
-
 }
