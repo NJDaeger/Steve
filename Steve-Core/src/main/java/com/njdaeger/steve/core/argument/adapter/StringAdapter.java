@@ -1,6 +1,7 @@
-package com.njdaeger.steve.core.parameter.adapter;
+package com.njdaeger.steve.core.argument.adapter;
 
-import com.njdaeger.steve.core.argument.Arguments;
+import com.njdaeger.steve.core.Arguments;
+import com.njdaeger.steve.core.argument.AbstractAdapter;
 
 public final class StringAdapter extends AbstractAdapter<String> {
 

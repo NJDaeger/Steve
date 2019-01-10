@@ -1,8 +1,12 @@
-package com.njdaeger.steve.core.parameter.adapter;
+package com.njdaeger.steve.core.argument;
 
-import com.njdaeger.steve.core.argument.Arguments;
+import com.njdaeger.steve.core.Arguments;
 import com.njdaeger.steve.core.exception.AdapterException;
 
+/**
+ * Formats argument into more useful form by adapting them to the desired type.
+ * @param <R> The type of value to turn the argument(s) into and return.
+ */
 public abstract class AbstractAdapter<R> {
 
     protected int currentArgumentIndex;

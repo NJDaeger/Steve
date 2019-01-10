@@ -1,9 +1,10 @@
-package com.njdaeger.steve.core.parameter.adapter;
+package com.njdaeger.steve.core.argument.adapter;
 
-import com.njdaeger.steve.core.argument.Arguments;
+import com.njdaeger.steve.core.Arguments;
 import com.njdaeger.steve.core.exception.AdapterException;
+import com.njdaeger.steve.core.argument.AbstractAdapter;
 
-public final class BooleanAdapter extends AbstractAdapter<Boolean>{
+public final class BooleanAdapter extends AbstractAdapter<Boolean> {
 
     public BooleanAdapter(int currentArgumentIndex) {
         super(currentArgumentIndex);

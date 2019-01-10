@@ -1,8 +1,8 @@
-package com.njdaeger.steve.core.argument;
+package com.njdaeger.steve.core;
 
 import com.njdaeger.steve.core.exception.AdapterException;
 import com.njdaeger.steve.core.exception.NotEnoughArgumentsException;
-import com.njdaeger.steve.core.parameter.adapter.AbstractAdapter;
+import com.njdaeger.steve.core.argument.AbstractAdapter;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
@@ -11,25 +11,25 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 /**
- * Represents the raw arguments provided in the given command.
+ * Represents the raw argument provided in the given command.
  */
 public class Arguments implements Iterable<String> {
 
     private final String[] arguments;
 
     /**
-     * Creates an Arguments object with the given command arguments array.
+     * Creates an Arguments object with the given command argument array.
      *
-     * @param arguments The array of arguments to represent.
+     * @param arguments The array of argument to represent.
      */
     public Arguments(String... arguments) {
         this.arguments = arguments;
     }
 
     /**
-     * Returns an iterator of the arguments array.
+     * Returns an iterator of the argument array.
      *
-     * @return An iterator of the arguments array.
+     * @return An iterator of the argument array.
      */
     @Override
     public Iterator<String> iterator() {
@@ -47,16 +47,16 @@ public class Arguments implements Iterable<String> {
     }
 
     /**
-     * The current length of this arguments array.
+     * The current length of this argument array.
      *
-     * @return The current length of the arguments array.
+     * @return The current length of the argument array.
      */
     public int length() {
         return arguments.length;
     }
 
     /**
-     * Method to retrieve the base array of arguments
+     * Method to retrieve the base array of argument
      *
      * @return The base argument array.
      */
@@ -65,7 +65,7 @@ public class Arguments implements Iterable<String> {
     }
 
     /**
-     * Method to retrieve the base array of arguments as a list.
+     * Method to retrieve the base array of argument as a list.
      *
      * @return THe base argument array as an ArrayList
      */
@@ -74,11 +74,11 @@ public class Arguments implements Iterable<String> {
     }
 
     /**
-     * Check whether the arguments array has an argument at the specified index. It checks whether the index provided is
+     * Check whether the argument array has an argument at the specified index. It checks whether the index provided is
      * within bounds and if the argument found is not null.
      *
      * @param index The index to check for an argument.
-     * @return True if the index given is greater than or equal to 0 and less than the length of the arguments array and if the
+     * @return True if the index given is greater than or equal to 0 and less than the length of the argument array and if the
      *         argument found is not null.
      */
     public boolean hasArgAt(int index) {
@@ -86,7 +86,7 @@ public class Arguments implements Iterable<String> {
     }
 
     /**
-     * Check if the arguments array has an argument at the specified index which matches the given {@link
+     * Check if the argument array has an argument at the specified index which matches the given {@link
      * AbstractAdapter} parser.
      *
      * @param index The index of the argument to check.
@@ -105,7 +105,7 @@ public class Arguments implements Iterable<String> {
     }
 
     /**
-     * Attempt to get an argument from the arguments array at the specified index parsed as the specified Adapter type
+     * Attempt to get an argument from the argument array at the specified index parsed as the specified Adapter type
      *
      * @param index The index of the argument to retrieve.
      * @param type The class type of the adapter to parse the argument with.
@@ -133,12 +133,12 @@ public class Arguments implements Iterable<String> {
      * @return The argument found, or null if no argument was found.
      */
     public String argAt(int index) {
-        if (hasArgAt(index)) return null;
+        if (!hasArgAt(index)) return null;
         else return arguments[index];
     }
 
     /**
-     * Attempts to return the first argument in the arguments array.
+     * Attempts to return the first argument in the argument array.
      *
      * @return The first argument in the argument array, or null if there is no first argument.
      */
@@ -147,7 +147,7 @@ public class Arguments implements Iterable<String> {
     }
 
     /**
-     * Attempts to return the first argument in the arguments array parsed with a specific {@link AbstractAdapter}
+     * Attempts to return the first argument in the argument array parsed with a specific {@link AbstractAdapter}
      *
      * @param type The class type of the adapter to parse this argument with.
      * @param <A> The {@link AbstractAdapter} to parse the argument with
@@ -157,18 +157,12 @@ public class Arguments implements Iterable<String> {
      * @throws NotEnoughArgumentsException If the argument does not exist.
      */
     public <A extends AbstractAdapter<T>, T> T first(Class<A> type) throws AdapterException, NotEnoughArgumentsException {
-        if (first() != null) {
-            try {
-                return type.getDeclaredConstructor(int.class).newInstance(0).adapt(this);
-            } catch (InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
+        if (first() != null) return argAt(0, type);
         throw new NotEnoughArgumentsException("Cannot adapt first argument. It does not exist!");
     }
 
     /**
-     * Attempts to return the first argument in the arguments array parsed with a specific {@link AbstractAdapter} or
+     * Attempts to return the first argument in the argument array parsed with a specific {@link AbstractAdapter} or
      * returns the fallback value if the value was unable to be parsed as the adapter provided or if the first argument
      * does not exist.
      *
@@ -181,7 +175,53 @@ public class Arguments implements Iterable<String> {
      *         unable to be parsed or if the first argument does not exist.
      */
     public <A extends AbstractAdapter<T>, T> T first(Class<A> type, T fallback) {
-        is
+        try {
+            return isArgAt(0, type) ? argAt(0, type) : fallback;
+        } catch (AdapterException | NotEnoughArgumentsException ignored) {}
+        return fallback;
+    }
+
+    /**
+     * Attempts to return the last argument int he argument array. This will return null if there are no argument.
+     * @return The last argument in the argument array, or null if there are no argument.
+     */
+    public String last() {
+        return argAt(arguments.length-1);
+    }
+
+    /**
+     * Attempts to return the last argument in the argument array parsed with a specific {@link AbstractAdapter}
+     *
+     * @param type The class type of the adapter to parse this argument with.
+     * @param <A> The {@link AbstractAdapter} to parse the argument with
+     * @param <T> The return type which is specified in the {@link AbstractAdapter<T>}
+     * @return The last argument parsed to the Abstract Adapter's adapting type.
+     * @throws AdapterException If the argument exists, but could not be parsed to the given adapter.
+     * @throws NotEnoughArgumentsException If the argument does not exist.
+     */
+    public <A extends AbstractAdapter<T>, T> T last(Class<A> type) throws AdapterException, NotEnoughArgumentsException {
+        if (last() != null) return argAt(arguments.length-1, type);
+        throw new NotEnoughArgumentsException("Cannot adapt last argument. It does not exist!");
+    }
+
+    /**
+     * Attempts to return the last argument in the argument array parsed with a specific {@link AbstractAdapter} or
+     * returns the fallback value if the value was unable to be parsed as the adapter provided or if the last argument
+     * does not exist.
+     *
+     * @param type The class type of the adapter to parse this argument with.
+     * @param fallback The fallback value to return if the value was unable to be parsed to the provided
+     *         adapter.
+     * @param <A> The {@link AbstractAdapter} to parse the argument with
+     * @param <T> The return type which is specified in the {@link AbstractAdapter<T>}
+     * @return The last argument parsed with the abstract adapter's adapting type, or the fallback value if it was
+     *         unable to be parsed or if the last argument does not exist.
+     */
+    public <A extends AbstractAdapter<T>, T> T last(Class<A> type, T fallback) {
+        try {
+            return isArgAt(arguments.length-1, type) ? argAt(arguments.length-1, type) : fallback;
+        } catch (AdapterException | NotEnoughArgumentsException ignored) {}
+        return fallback;
     }
 
     private class ArgumentsIterator implements Iterator<String> {
