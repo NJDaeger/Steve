@@ -1,6 +1,7 @@
 package com.njdaeger.steve.core.argument.adapter;
 
 import com.njdaeger.steve.core.Arguments;
+import com.njdaeger.steve.core.argument.AbstractNumericAdapter;
 import com.njdaeger.steve.core.exception.AdapterException;
 
 public final class IntegerAdapter extends AbstractNumericAdapter<Integer> {
