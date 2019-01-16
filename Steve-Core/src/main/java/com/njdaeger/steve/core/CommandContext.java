@@ -8,18 +8,6 @@ public interface CommandContext<S> {
 
     S getSource();
 
-    boolean isConsole();
-
-    boolean isPlayer();
-
-    boolean isEntity();
-
-    boolean isBlock();
-
-    default boolean isLocatable() {
-        return !isConsole();
-    }
-
     default <T extends S> boolean isType(Class<T> type) {
         return type.isInstance(getSource());
     }

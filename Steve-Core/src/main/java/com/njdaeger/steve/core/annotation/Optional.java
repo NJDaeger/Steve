@@ -11,6 +11,4 @@ public @interface Optional {
 
     String value() default "";
 
-    int consume() default 1;
-
 }

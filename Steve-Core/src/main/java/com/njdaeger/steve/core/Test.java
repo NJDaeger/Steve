@@ -1,6 +1,7 @@
 package com.njdaeger.steve.core;
 
 import com.njdaeger.steve.core.annotation.Command;
+import com.njdaeger.steve.core.annotation.Consume;
 import com.njdaeger.steve.core.annotation.Flag;
 import com.njdaeger.steve.core.annotation.Optional;
 
@@ -25,7 +26,12 @@ public class Test {
         - When the argument is matched, we take it out of the argument array and then move on to the next argument
 
      */
-    public void nickname(Arguments args, CommandContext context, @Optional("world") String world, @Optional String player, String nickname) {
+    public void nickname(
+            Arguments args,
+            CommandContext context,
+            @Consume @Optional("world") String world,
+            @Consume @Optional String player,
+            @Consume(-1) String nickname) {
 
     }
 

@@ -15,7 +15,7 @@ import java.util.NoSuchElementException;
  */
 public class Arguments implements Iterable<String> {
 
-    private final String[] arguments;
+    private String[] arguments;
 
     /**
      * Creates an Arguments object with the given command argument array.
@@ -222,6 +222,17 @@ public class Arguments implements Iterable<String> {
             return isArgAt(arguments.length-1, type) ? argAt(arguments.length-1, type) : fallback;
         } catch (AdapterException | NotEnoughArgumentsException ignored) {}
         return fallback;
+    }
+
+    void consume(int index) {
+        if (index < arguments.length && index >= 0) {
+            String[] replacement = new String[arguments.length-1];
+            for (int i = 0; i < arguments.length; i++) {
+                if (i == index) continue;
+                replacement[i] = arguments[i];
+            }
+            this.arguments = replacement;
+        }
     }
 
     private class ArgumentsIterator implements Iterator<String> {
