@@ -6,6 +6,8 @@ import com.njdaeger.steve.core.exception.SteveException;
 
 public abstract class AbstractParameterProvider<P, S> {
 
+    public AbstractParameterProvider(int consume)
+
     public abstract P provide(Arguments args, CommandContext<S> context) throws SteveException;
 
 }

@@ -76,16 +76,44 @@ public class SteveCommand {
 
     public void execute(Arguments arguments, CommandContext<?> context) {
 
-        for (Entry<Parameter, Annotation[]> entry : parameterMap.entrySet()) {
+        //Whether the Arguments object has been found
+        boolean argumentFound = false;
+        //Whether the CommandContext argument has been found.
+        boolean contextFound = false;
 
-            for (Annotation annotation : entry.getValue()) {
+        for (Parameter param : parameters) {
 
+            if (!argumentFound && param.getType() == Arguments.class) argumentFound = true;
+            if (!contextFound && param.getType() == CommandContext.class) contextFound = true;
 
+            if (param.getAnnotations().length == 0 && isDefault(param.getType())) {
 
             }
 
         }
 
+    }
+
+    private boolean isDefault(Class cls) {
+        //Painful to look at, but these are the default supported arguments.
+        return cls == String.class ||
+                cls == Integer.class ||
+                cls == int.class ||
+                cls == Long.class ||
+                cls == long.class ||
+                cls == Double.class ||
+                cls == double.class ||
+                cls == Float.class ||
+                cls == float.class ||
+                cls == Short.class ||
+                cls == short.class ||
+                cls == Byte.class ||
+                cls == byte.class ||
+                cls == Number.class;
+    }
+
+    private boolean isNumeric(Class cls) {
+        return cls != String.class && isDefault(cls);
     }
 
     public List<Suggestions> suggest(Arguments arguments) {
